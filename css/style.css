@@ -1,0 +1,147 @@
+html,
+body {
+  background: #D1913C;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #D1913C, #FFD194);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #D1913C, #FFD194);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.head {
+  font-size: 50px;
+  font-weight: bold;
+  font-family: "Monoton", cursive;
+  color: #485563;
+  /* fallback for old browsers */
+  color: -webkit-linear-gradient(to left, #485563, #29323c);
+  /* Chrome 10-25, Safari 5.1-6 */
+  color: linear-gradient(to left, #485563, #29323c);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+#myContainer {
+  max-width: 800px;
+}
+#myContainer .empty {
+  font-family: FontAwesome, 'Helvetica', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+}
+
+.row div {
+  display: table-cell;
+  text-align: center;
+  vertical-align: bottom;
+}
+.row div.iconStatus {
+  margin-top: 1em;
+  font-size: 17px;
+}
+.row div.name {
+  margin-top: 1em;
+  font-size: 17px;
+}
+
+.red {
+  color: #E41B17;
+  font-size: 23px;
+}
+
+.green {
+  font-size: 23px;
+  color: #41A317;
+}
+
+.globe {
+  color: whitesmoke;
+  font-size: 23px;
+}
+
+.listgroupitem {
+  border-style: none;
+}
+
+.listgroupitem:nth-child(odd) {
+  background: #485563;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #485563, #29323c);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #485563, #29323c);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: whitesmoke;
+}
+.listgroupitem:nth-child(odd):hover {
+  background: steelblue;
+  color: whitesmoke;
+}
+
+.listgroupitem:nth-child(even) {
+  background: #606c88;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #606c88, #3f4c6b);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #606c88, #3f4c6b);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: whitesmoke;
+}
+.listgroupitem:nth-child(even):hover {
+  background: steelblue;
+  color: whitesmoke;
+}
+
+.search-bar {
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+
+.pill {
+  border-radius: 5px;
+  background: #606c88;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #606c88, #3f4c6b);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #606c88, #3f4c6b);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.pill span {
+  font-weight: bold;
+  color: whitesmoke;
+}
+.pill:hover span {
+  color: black;
+}
+
+.nameTitle {
+  font-weight: bold;
+}
+
+/*loader css*/
+#loader {
+  margin: 20px auto;
+  width: 150px;
+  height: 150px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

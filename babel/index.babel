@@ -1,0 +1,270 @@
+var Nav = ReactBootstrap.Nav,
+  NavItem = ReactBootstrap.NavItem,
+  ListGroup = ReactBootstrap.ListGroup,
+  ListGroupItem = ReactBootstrap.ListGroupItem;
+var streamersArray = ["freecodecamp", "ESL_SC2", "OgamingSC2", "cretetion", "storbeck", "habathcx", "RobotCaleb", "test_channel", "noobs2ninjas", "sheevergaming", "TR7K", "terakilobyte", "comster404", "sceneofactionmusic"];
+var streamersArrayDataHolder = [];
+
+var Navs = function(props) {
+  return (
+    <Nav bsStyle="pills" justified activeKey={props.activeKey} onSelect={props.handleSelect}>
+        <NavItem className="pill" eventKey={1} ><span>All</span> <i className="fa fa-globe globe" aria-hidden="true"></i>
+</NavItem>
+    <NavItem className="pill" eventKey={2} ><span>Online</span>  <i className="fa fa-check-circle-o green" aria-hidden="true"></i></NavItem>
+    <NavItem className="pill" eventKey={3} ><span>Offline</span> <i className="fa fa-times-circle-o red" aria-hidden="true"></i></NavItem>
+      </Nav>
+
+  );
+}
+
+class SearchBar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      term: ''
+    };
+  }
+  render() {
+    return (
+      <div className="search-bar">
+                <input className='form-control'
+                     value = {this.state.term} //value of the input is === to the state value
+                    //IN REAL TIME.
+                   // onChange={(event) => this.setState({term: event.target.value})}/>
+                       onChange={(event) => this.onInputChange(event.target.value)}/>
+
+            </div>
+    );
+  }
+
+  onInputChange(term) {
+    this.setState({
+      term: term
+    });
+    this._mySearch(term);
+  }
+
+  _mySearch(term) {
+    var filter = term.toLowerCase();
+    var lis = document.getElementsByClassName('listgroupitem');
+    console.log(lis);
+    for (var i = 0; i < lis.length; i++) {
+      var name = lis[i].getElementsByClassName('nameTitle')[0].innerHTML;
+      if (name.toLowerCase().indexOf(filter) == 0)
+        lis[i].style.display = '';
+      else
+        lis[i].style.display = 'none';
+    }
+
+  }
+
+}
+
+class TwitchList extends React.Component {
+  getAllItemObjects() {
+    if (this.props.streamersArrayDataHolder.length < 1) {
+      return <div className="text-center" id='loader'></div>;
+    } else {
+      var itemObjects = this.props.streamersArrayDataHolder.map((item, index) => {
+        return <TwitchListItem
+                key={index}
+                name = {item.name}
+                imgSrc = {item.imgSrc}
+                content ={item.content}
+                link = {item.link}
+                nonExistance={item.nonExistance}
+                _isStreaming ={item._isStreaming}
+                 />;
+      });
+      return itemObjects;
+    }
+  }
+  getOnlineItemObjects() {
+    if (this.props.streamersArrayDataHolder.length < 1) {
+      return <div>...Loading</div>;
+    } else {
+      var itemObjects = this.props.streamersArrayDataHolder.map((item, index) => {
+        if (item._isStreaming) {
+          return <TwitchListItem
+                key={index}
+                name = {item.name}
+                imgSrc = {item.imgSrc}
+                content ={item.content}
+                link = {item.link}
+                nonExistance={item.nonExistance}
+                _isStreaming ={item._isStreaming}
+                 />;
+        }
+
+      });
+      return itemObjects;
+    }
+  }
+  getOfflineItemObjects() {
+    if (this.props.streamersArrayDataHolder.length < 1) {
+      return <div>...Loading</div>;
+    } else {
+      var itemObjects = this.props.streamersArrayDataHolder.map((item, index) => {
+
+        if (item._isStreaming === false) {
+          return <TwitchListItem
+                key={index}
+                name = {item.name}
+                imgSrc = {item.imgSrc}
+                content ={item.content}
+                link = {item.link}
+                nonExistance={item.nonExistance}
+                _isStreaming ={item._isStreaming}
+                 />;
+        }
+      });
+      return itemObjects;
+    }
+  }
+  itemsSelector() {
+    if (this.props.activeKey == 1) {
+      return this.getAllItemObjects();
+    } else if (this.props.activeKey == 2) {
+      return this.getOnlineItemObjects();
+    } else if (this.props.activeKey == 3) {
+      return this.getOfflineItemObjects();
+    }
+  }
+  render() {
+    return (
+      <ListGroup className='listgroup'> 
+        {this.itemsSelector()}
+      </ListGroup>);
+  }
+
+}
+
+class TwitchListItem extends React.Component {
+
+  statusFinder() {
+    if (this.props._isStreaming === true) {
+      return <i className="fa fa-check-circle-o green" aria-hidden="true"></i>;
+    } else if (this.props._isStreaming === false && !this.props.nonExistance) {
+      return <i className="fa fa-times-circle-o red" aria-hidden="true"></i>;
+    } else {
+      return 'Account Closed'
+    }
+  }
+
+  render() {
+    return (
+      <ListGroupItem className='listgroupitem' href={this.props.link} target='_blank'>
+        <div className='row' >
+          <div className="col-md-4 col-sm-4 col-xs-4"><img src={this.props.imgSrc} height='75' width='75' style={{borderRadius:'15px'}} /></div>
+          <div className="col-md-4 col-sm-4 col-xs-4 name">
+            <p className='nameTitle'>{this.props.name}</p>
+            <span>{this.props.content}</span>
+          </div>
+          <div className="col-md-4 col-sm-4 col-xs-4 iconStatus"><span>{this.statusFinder()}</span></div>
+        </div>
+      
+      </ListGroupItem>
+    );
+  }
+}
+class Main extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeKey: 1,
+      streamersArrayDataHolder: []
+    }
+  }
+
+  componentWillMount() {
+    this.fetchTwitchApi();
+
+  }
+
+  fetchTwitchApi() {
+    var myThis = this; //use this variable to access global this
+    var nonImgUrl = 'http://1.bp.blogspot.com/-An8klzluffQ/Ul8rhCqp29I/AAAAAAAAAi0/CzO4Tbe1nkk/s1600/no_image_small.png';
+    var cId = 'meyikwzfnzu6qf8h5jm2lejtghxxiju';
+    streamersArray.forEach(function(channel) {
+      var url = "https://api.twitch.tv/kraken/streams/" + channel;
+
+      $.ajax({
+        type: 'GET',
+        url: url,
+        headers: {
+          'Client-ID': cId
+        },
+        error: function(data) {
+          var newObjectError = {
+            nonExistance: true,
+            name: channel,
+            imgSrc: nonImgUrl,
+            _isStreaming: false
+          }
+          myThis.setState({
+            streamersArrayDataHolder: myThis.state.streamersArrayDataHolder.concat(newObjectError)
+          })
+
+        }.bind(this),
+        success: function(data) {
+
+          $.ajax({
+            type: 'GET',
+            url: data._links.channel,
+            headers: {
+              'Client-ID': cId
+            },
+            success: function(channelInfo) {
+              var newObject = {
+                imgSrc: channelInfo.logo || nonImgUrl,
+                name: channelInfo.name,
+                link: channelInfo.url
+
+              }
+              if (!data.stream) {
+                newObject._isStreaming = false; //add property to check if streaming
+              } else {
+                newObject._isStreaming = true; //add property to check if streaming
+                newObject.content = data.stream.game;
+
+              }
+
+              myThis.setState({
+                streamersArrayDataHolder: myThis.state.streamersArrayDataHolder.concat(newObject)
+              })
+
+            }
+          });
+
+        }
+      });
+
+    });
+
+  }
+
+  /** Sets the state of the active Nav
+      Takes a selectedKey argument, wich is the eventKey of nav selected
+  */
+  handleSelect(selectedKey) {
+    this.setState({
+      activeKey: selectedKey
+    });
+
+  }
+  render() {
+
+    return (
+      <div>
+                <Navs activeKey={this.state.activeKey}  handleSelect={this.handleSelect.bind(this)}/>
+        
+        <SearchBar/>
+
+        <TwitchList activeKey={this.state.activeKey} streamersArrayDataHolder={this.state.streamersArrayDataHolder}/>
+      </div>
+    );
+  }
+
+}
+
+ReactDOM.render(<Main/>, document.querySelector('#myContainer'));
